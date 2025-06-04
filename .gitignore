@@ -1,0 +1,6 @@
+.env
+node_modules
+dist
+_pycache_
+media
+generated_scene
