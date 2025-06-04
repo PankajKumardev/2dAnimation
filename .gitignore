@@ -1,6 +1,6 @@
 .env
 node_modules
 dist
-_pycache_
+worker/_pycache__
 media
 generated_scene
