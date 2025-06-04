@@ -6,8 +6,7 @@ import re
 
 app = FastAPI()
 
-# 🔐 Configure Gemini API key (replace with your actual key)
-genai.configure(api_key="AIzaSyAnZmCZkZ6Kuq9aRHhKkcLlu4jG7nd4unA")
+genai.configure(api_key="YOUR_API_KEY")
 
 class PromptRequest(BaseModel):
     prompt: str
@@ -32,7 +31,6 @@ async def generate_video(req: PromptRequest):
     try:
         model = genai.GenerativeModel("gemini-2.0-flash-lite")
 
-        # Retry up to 2 times in case generated code is invalid
         for attempt in range(2):
             response = model.generate_content(
                 f"Write a short, syntactically correct Manim Scene class Python code to: {prompt}. "
@@ -40,27 +38,24 @@ async def generate_video(req: PromptRequest):
             )
             code = clean_code(response.text)
 
-            # Validate syntax
             try:
                 compile(code, "generated_scene.py", "exec")
-                break  # Valid code, stop retrying
+                break  
             except SyntaxError:
                 if attempt == 1:
                     return {
                         "status": "error",
                         "message": "Invalid Python code generated after retry",
                     }
-                # else retry once more
+          
 
-        # Save cleaned code to file
         with open("generated_scene.py", "w") as f:
             f.write(code)
 
-        # Extract scene class name from code (default to 'Scene')
         match = re.search(r"class\s+(\w+)\(.*?Scene.*?\):", code)
         scene_class = match.group(1) if match else "Scene"
 
-        # Run manim to generate video
+       
         subprocess.run(
             ["manim", "generated_scene.py", scene_class, "-o", "output.mp4", "-ql"],
             check=True,
