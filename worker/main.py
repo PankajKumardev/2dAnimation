@@ -6,7 +6,7 @@ import re
 
 app = FastAPI()
 
-genai.configure(api_key="YOUR_API_KEY")
+genai.configure(api_key="")
 
 class PromptRequest(BaseModel):
     prompt: str
@@ -29,12 +29,17 @@ async def generate_video(req: PromptRequest):
     prompt = req.prompt
 
     try:
-        model = genai.GenerativeModel("gemini-2.0-flash-lite")
+        model = genai.GenerativeModel("gemini-2.0-flash")
 
         for attempt in range(2):
             response = model.generate_content(
-                f"Write a short, syntactically correct Manim Scene class Python code to: {prompt}. "
-                "Use 'from manim import *' and only one Scene subclass. No extra explanation or comments."
+                f"Write syntactically correct Python code using the Manim library to: {prompt}. "
+                "Start with 'from manim import *'. Define only one Scene subclass. "
+                "Use Manim Latex. "
+                "Ensure the scene has no overlapping objects—use self.clear() or self.play(FadeOut(...)) before introducing new elements. "
+                "Layout should be well-spaced with consistent scaling and positioning. "
+                "Avoid showing too many elements at once—use step-by-step animations with appropriate pauses. "
+                "Do not include any extra comments or explanation—only the code."
             )
             code = clean_code(response.text)
 
