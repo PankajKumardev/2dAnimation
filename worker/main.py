@@ -6,7 +6,7 @@ import re
 
 app = FastAPI()
 
-genai.configure(api_key="")
+genai.configure(api_key="AIzaSyAnZmCZkZ6Kuq9aRHhKkcLlu4jG7nd4unA")
 
 class PromptRequest(BaseModel):
     prompt: str
@@ -33,13 +33,21 @@ async def generate_video(req: PromptRequest):
 
         for attempt in range(2):
             response = model.generate_content(
-                f"Write syntactically correct Python code using the Manim library to: {prompt}. "
-                "Start with 'from manim import *'. Define only one Scene subclass. "
-                "Use Manim Latex. "
-                "Ensure the scene has no overlapping objects—use self.clear() or self.play(FadeOut(...)) before introducing new elements. "
-                "Layout should be well-spaced with consistent scaling and positioning. "
-                "Avoid showing too many elements at once—use step-by-step animations with appropriate pauses. "
-                "Do not include any extra comments or explanation—only the code."
+              f"""Generate an elegant, high-quality Manim animation in Python based on the following concept: '{prompt}'
+                Constraints:
+                - Only output a Python file with one class that extends Scene
+                - Class name must be 'GeneratedScene'
+                - Include required import: 'from manim import *'
+                - imp video should not overlap with other scenes use animation and remove previous scene that no needed.
+                - The scene should not go outisde the screen or frame
+                - Animation must include motion, transformations, color, labels, and timing
+                - Make the animation visually appealing and smooth
+                - Use creative use of shapes, graphs, text, or formulas (as needed)
+                - Do not include comments or explanations — only valid Python code
+                - No color constants like ORANGE_B – use 'red', 'blue', or hex
+                - IMPORTANT: Use Text() instead of Tex() or MathTex() for all text
+                - IMPORTANT: Use simple decimal numbers instead of PI or fractions in ranges
+                - IMPORTANT: Avoid LaTeX symbols - use regular text only"""
             )
             code = clean_code(response.text)
 
@@ -62,11 +70,11 @@ async def generate_video(req: PromptRequest):
 
        
         subprocess.run(
-            ["manim", "generated_scene.py", scene_class, "-o", "output.mp4", "-ql"],
+            ["manim", "generated_scene.py", scene_class, "-o", "output.mp4", "-qm"],
             check=True,
             text=True,
             capture_output=True,
-            timeout=120
+            timeout=150
 
         )
 
