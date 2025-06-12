@@ -6,7 +6,7 @@ import re
 
 app = FastAPI()
 
-genai.configure(api_key="AIzaSyAnZmCZkZ6Kuq9aRHhKkcLlu4jG7nd4unA")
+genai.configure(api_key="Your API Key Here")
 
 class PromptRequest(BaseModel):
     prompt: str
