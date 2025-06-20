@@ -7,16 +7,9 @@ app.use(express.json());
 app.use(cors());
 
 app.post('/generate', async (req, res) => {
-  const { prompt } = req.body;
-
-  if (!prompt) {
-    res.status(400).json({ error: 'Prompt is required' });
-    return;
-  }
-
   try {
     const response = await axios.post('http://localhost:8000/generate', {
-      prompt,
+      prompt: req.body.prompt,
     });
     res.status(200).json(response.data);
     return;
@@ -24,7 +17,6 @@ app.post('/generate', async (req, res) => {
     res.status(500).json({ error: 'Error generating response', detail: e });
     return;
   }
-
 });
 
 app.listen(3000, () => {
