@@ -10,6 +10,7 @@ app.post('/generate', async (req, res) => {
   try {
     const response = await axios.post('http://localhost:8000/generate', {
       prompt: req.body.prompt,
+      quality : req.body.quality || '720p',
     });
     res.status(200).json(response.data);
     return;
