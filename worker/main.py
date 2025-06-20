@@ -148,7 +148,6 @@ async def generate_video(req: PromptRequest):
 
         s3_url = f"https://{bucket_name}.s3.amazonaws.com/{s3_key}"
 
-        # ✅ Cleanup temp files
         os.remove(video_path)
         os.remove(file_path)
 
